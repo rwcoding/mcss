@@ -1,0 +1,9 @@
+node_modules
+.idea
+.settings
+.vscode
+.project
+
+/_test
+/tmp
+/src
