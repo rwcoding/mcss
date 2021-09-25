@@ -7,9 +7,11 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func init() {
+	InitConsole(os.Args)
 	parse()
 }
 
@@ -19,8 +21,10 @@ var Options struct {
 	View      string                 `yaml:"view"`
 	Component []string               `yaml:"component"`
 	Mcss      map[string]interface{} `yaml:"mcss"`
+	Script    map[string]interface{} `yaml:"script"`
 	VoidTag   []string               `yaml:"void_tag"`
 	Root      string
+	TmpPath   string `yaml:"tmp_path"`
 }
 
 func parse() {
@@ -39,10 +43,10 @@ func parse() {
 		f, err = os.Open(configFile)
 		dir, _ = filepath.Abs(filepath.Dir(configFile))
 	} else {
-		if dir, err = filepath.Abs(filepath.Dir(os.Args[0])); err == nil {
-			if f, err = os.Open(dir + string(os.PathSeparator) + "mcss.yaml"); err != nil {
-				if dir, err = os.Getwd(); err == nil {
-					if f, err = os.Open(dir + string(os.PathSeparator) + "mcss.local.yaml"); err != nil {
+		if dir, err = os.Getwd(); err == nil {
+			if f, err = os.Open(dir + string(os.PathSeparator) + "mcss.local.yaml"); err != nil {
+				if f, err = os.Open(dir + string(os.PathSeparator) + "mcss.yaml"); err != nil {
+					if dir, err = filepath.Abs(filepath.Dir(os.Args[0])); err == nil {
 						f, err = os.Open(dir + string(os.PathSeparator) + "mcss.yaml")
 					}
 				}
@@ -66,5 +70,8 @@ func parse() {
 	}
 
 	Options.Root = dir
-	Options.View = dir + string(os.PathSeparator) + Options.View
+	Options.View = strings.ReplaceAll(dir+"/"+Options.View, "/", string(os.PathSeparator))
+	if Options.TmpPath == "" {
+		Options.TmpPath = "tmp"
+	}
 }

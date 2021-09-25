@@ -1,16 +1,11 @@
 package internal
 
 import (
-	"os"
 	"strings"
 )
 
 var consoleFlag map[string]string = map[string]string{}
-var consoleCommand map[string]bool = map[string]bool{}
-
-func init() {
-	InitConsole(os.Args)
-}
+var consoleCommand []string
 
 // InitConsole 初始化控制台参数
 func InitConsole(args []string) {
@@ -32,7 +27,7 @@ func InitConsole(args []string) {
 				consoleFlag[args[i][1:]] = val
 			}
 		} else {
-			if args[i] == "add" {
+			if args[i] == "start" {
 				consoleFlag["worker"] = args[i+1]
 				jump = i + 1
 			}
@@ -44,16 +39,24 @@ func InitConsole(args []string) {
 				consoleFlag["server"] = args[i+1]
 				jump = i + 1
 			}
-
-			consoleCommand[args[i]] = true
+			consoleCommand = append(consoleCommand, args[i])
 		}
 	}
 }
 
 // HasCommand 是否存在指令
 func HasCommand(name string) bool {
-	_, ok := consoleCommand[name]
-	return ok
+	for _, v := range consoleCommand {
+		if v == name {
+			return true
+		}
+	}
+	return false
+}
+
+// GetCommands 是否存在指令
+func GetCommands() []string {
+	return consoleCommand
 }
 
 // HasFlag 是否存在参数

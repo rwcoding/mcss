@@ -9,6 +9,9 @@ import (
 )
 
 func main() {
+	internal.InitCmd()
+	internal.InitScript()
+
 	app := gin.Default()
 	if internal.Options.Debug {
 		gin.SetMode(gin.DebugMode)
