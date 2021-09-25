@@ -1,32 +1,43 @@
 package internal
 
 import (
-	"github.com/rwcoding/mcss/config"
 	"github.com/rwcoding/mcss/hds"
 	"log"
-	"os"
 	"strings"
 )
 
-func nodesToString(nodes []*hds.Node) []byte {
+func nodesToString(nodes []*hds.Node, file string) []byte {
 	s := strings.Builder{}
-	for _,v := range nodes {
-		s.WriteString(nodeToString(v))
+	for _, v := range nodes {
+		s.WriteString(nodeToString(v, file))
 	}
 	return []byte(s.String())
 }
 
-func nodeToString(n *hds.Node) string {
+//todo 元素快捷指令
+func nodeToString(n *hds.Node, file string) string {
 	if n.Type == hds.TextType || n.Type == hds.DocType || n.Type == hds.NullType {
 		return n.Content
 	}
 	if strings.Contains(n.Tag, "-") {
-		file := config.Options.View + string(os.PathSeparator) + n.Tag + ".html"
-		b, err := ParseFile(file, n.Attributes)
+
+		if len(n.Children) > 0 {
+			n.Attributes["content"] = string(nodesToString(n.Children, file))
+		}
+
+		file, err := FindComponent(n.Tag, file)
 		if err != nil {
-			log.Println("warning: "+err.Error())
+			log.Println("warning: " + err.Error())
 		} else {
-			return string(b)
+			b, err := ParseFile(file, n.Attributes)
+			if err != nil {
+				log.Println("warning: " + err.Error())
+				if len(n.Children) > 0 {
+					delete(n.Attributes, "content")
+				}
+			} else {
+				return string(b)
+			}
 		}
 	}
 	s := strings.Builder{}
@@ -45,8 +56,8 @@ func nodeToString(n *hds.Node) string {
 		return s.String()
 	}
 	if len(n.Children) > 0 {
-		for _,v := range n.Children {
-			s.WriteString(nodeToString(v))
+		for _, v := range n.Children {
+			s.WriteString(nodeToString(v, file))
 		}
 	}
 	s.WriteString("</")

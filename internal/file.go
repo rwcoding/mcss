@@ -2,29 +2,32 @@ package internal
 
 import (
 	"github.com/flosch/pongo2/v4"
+	"github.com/rwcoding/mcss/config"
 	"github.com/rwcoding/mcss/hds"
 	"strings"
 )
 
-func ParseFile(file string, data map[string]string) ([]byte, error)  {
+func ParseFile(file string, data map[string]string) ([]byte, error) {
 	tpl, err := pongo2.FromFile(file)
 	if err != nil {
 		return nil, err
 	}
 
-	params := pongo2.Context{}
-	for k,v := range data {
+	params := pongo2.Context{
+		"mcss": config.Options.Mcss,
+	}
+	for k, v := range data {
 		if v[:1] == "[" {
 			r := []string{}
-			for _,vv := range strings.Split(v[1:len(v)-1], ",") {
+			for _, vv := range strings.Split(v[1:len(v)-1], ",") {
 				r = append(r, strings.TrimSpace(vv))
 			}
 			params[k] = r
 		} else if v[:1] == "{" {
 			r := map[string]string{}
-			for _,vv := range strings.Split(v[1:len(v)-1], ",") {
+			for _, vv := range strings.Split(v[1:len(v)-1], ",") {
 				or := strings.Split(strings.TrimSpace(vv), ":")
-				if len(or) == 2  {
+				if len(or) == 2 {
 					r[strings.TrimSpace(or[0])] = strings.TrimSpace(or[1])
 				}
 			}
@@ -42,5 +45,5 @@ func ParseFile(file string, data map[string]string) ([]byte, error)  {
 	if err != nil {
 		return nil, err
 	}
-	return nodesToString(nodes), nil
+	return nodesToString(nodes, file), nil
 }

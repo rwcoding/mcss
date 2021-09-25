@@ -14,10 +14,13 @@ func init() {
 	parse()
 }
 
-var Options struct{
-	Addr string `yaml:"addr"`
-	View string `yaml:"view"`
-	Root string
+var Options struct {
+	Debug     bool                   `yaml:"debug"`
+	Addr      string                 `yaml:"addr"`
+	View      string                 `yaml:"view"`
+	Component []string               `yaml:"component"`
+	Mcss      map[string]interface{} `yaml:"mcss"`
+	Root      string
 }
 
 func parse() {
@@ -34,7 +37,7 @@ func parse() {
 
 	if configFile != "" {
 		f, err = os.Open(configFile)
-		dir,_ = filepath.Abs(filepath.Dir(configFile));
+		dir, _ = filepath.Abs(filepath.Dir(configFile))
 	} else {
 		if dir, err = filepath.Abs(filepath.Dir(os.Args[0])); err == nil {
 			f, err = os.Open(dir + string(os.PathSeparator) + "mcss.yaml")
