@@ -2,8 +2,6 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/rwcoding/mcss/config"
-	_ "github.com/rwcoding/mcss/config"
 	"github.com/rwcoding/mcss/internal"
 	"log"
 	"net/http"
@@ -12,6 +10,11 @@ import (
 
 func main() {
 	app := gin.Default()
+	if internal.Options.Debug {
+		gin.SetMode(gin.DebugMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	app.NoRoute(func(context *gin.Context) {
 		path := context.Request.URL.Path
 		if path[len(path)-1:] == "/" {
@@ -20,7 +23,7 @@ func main() {
 		if !strings.Contains(path, ".html") {
 			path += ".html"
 		}
-		file := config.Options.View + path
+		file := internal.Options.View + path
 
 		html, err := internal.ParseFile(file, nil)
 
@@ -31,7 +34,7 @@ func main() {
 			context.Data(http.StatusOK, "text/html; charset=utf-8", html)
 		}
 	})
-	if err := app.Run(config.Options.Addr); err != nil {
+	if err := app.Run(internal.Options.Addr); err != nil {
 		log.Fatal(err)
 	}
 }

@@ -1,4 +1,4 @@
-package hds
+package internal
 
 import (
 	"bytes"
@@ -31,18 +31,11 @@ func Parse(text []byte) ([]*Node, error) {
 			if !isVoidTag {
 				queue.trace(token.Data)
 			}
-			continue;
+			continue
 		}
-		//
-		//
-		//fmt.Println("-----------------------------")
-		//fmt.Println(tt)
-		//fmt.Println(token.Data)
-		//fmt.Println(token.Attr)
-		//fmt.Println(token.DataAtom)
-		//fmt.Println(token.String())
+
 		node := Node{
-			NeedClose: !isVoidTag,
+			NeedClose:  !isVoidTag,
 			Attributes: map[string]string{},
 		}
 		queue.add(&node)
@@ -50,15 +43,15 @@ func Parse(text []byte) ([]*Node, error) {
 		if tt == html.TextToken {
 			node.Type = TextType
 			node.Children = nil
-			node.Content = token.String()
+			node.Content = html.UnescapeString(token.String())
 			continue
 		}
 
-		for _,v := range token.Attr {
+		for _, v := range token.Attr {
 			node.Attributes[v.Key] = v.Val
 		}
 
-		if tt == html.StartTagToken ||  tt == html.SelfClosingTagToken {
+		if tt == html.StartTagToken || tt == html.SelfClosingTagToken {
 			node.Type = TagType
 			node.Tag = token.Data
 		} else if tt == html.DoctypeToken {

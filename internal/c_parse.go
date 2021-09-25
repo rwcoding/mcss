@@ -2,8 +2,6 @@ package internal
 
 import (
 	"github.com/flosch/pongo2/v4"
-	"github.com/rwcoding/mcss/config"
-	"github.com/rwcoding/mcss/hds"
 	"strings"
 )
 
@@ -14,7 +12,7 @@ func ParseFile(file string, data map[string]string) ([]byte, error) {
 	}
 
 	params := pongo2.Context{
-		"mcss": config.Options.Mcss,
+		"mcss": Options.Mcss,
 	}
 	for k, v := range data {
 		if v[:1] == "[" {
@@ -41,7 +39,8 @@ func ParseFile(file string, data map[string]string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	nodes, err := hds.Parse(out)
+
+	nodes, err := Parse(out)
 	if err != nil {
 		return nil, err
 	}

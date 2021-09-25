@@ -1,7 +1,6 @@
-package config
+package internal
 
 import (
-	"github.com/rwcoding/mcss/console"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"log"
@@ -26,7 +25,7 @@ var Options struct {
 func parse() {
 	configFile := ""
 
-	if conf := console.GetFlag("conf"); conf != "" {
+	if conf := GetFlag("conf"); conf != "" {
 		configFile = conf
 	}
 

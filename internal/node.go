@@ -1,31 +1,54 @@
 package internal
 
 import (
-	"github.com/rwcoding/mcss/hds"
 	"log"
 	"strings"
 )
 
-func nodesToString(nodes []*hds.Node, file string) []byte {
-	s := strings.Builder{}
-	for _, v := range nodes {
-		s.WriteString(nodeToString(v, file))
+type NodeType uint32
+
+const (
+	NullType NodeType = iota
+	TextType
+	TagType
+	DocType
+)
+
+func (nt NodeType) String() string {
+	if nt == TextType {
+		return "text"
+	} else if nt == TagType {
+		return "tag"
+	} else if nt == DocType {
+		return "doc"
 	}
-	return []byte(s.String())
+	return "null"
 }
 
-//todo 元素快捷指令
-func nodeToString(n *hds.Node, file string) string {
-	if n.Type == hds.TextType || n.Type == hds.DocType || n.Type == hds.NullType {
+type Node struct {
+	Type       NodeType
+	Tag        string
+	NeedClose  bool
+	Content    string
+	Attributes map[string]string
+	Children   []*Node
+}
+
+func (n *Node) Add(node *Node) {
+	n.Children = append(n.Children, node)
+}
+
+func (n *Node) String(fromFile string) string {
+	if n.Type == TextType || n.Type == DocType || n.Type == NullType {
 		return n.Content
 	}
 	if strings.Contains(n.Tag, "-") {
 
 		if len(n.Children) > 0 {
-			n.Attributes["content"] = string(nodesToString(n.Children, file))
+			n.Attributes["content"] = string(nodesToString(n.Children, fromFile))
 		}
 
-		file, err := FindComponent(n.Tag, file)
+		file, err := FindComponent(n.Tag, fromFile)
 		if err != nil {
 			log.Println("warning: " + err.Error())
 		} else {
@@ -57,11 +80,19 @@ func nodeToString(n *hds.Node, file string) string {
 	}
 	if len(n.Children) > 0 {
 		for _, v := range n.Children {
-			s.WriteString(nodeToString(v, file))
+			s.WriteString(v.String(fromFile))
 		}
 	}
 	s.WriteString("</")
 	s.WriteString(n.Tag)
 	s.WriteString(">")
 	return s.String()
+}
+
+func nodesToString(nodes []*Node, file string) []byte {
+	s := strings.Builder{}
+	for _, v := range nodes {
+		s.WriteString(v.String(file))
+	}
+	return []byte(s.String())
 }

@@ -1,4 +1,4 @@
-package hds
+package internal
 
 var voidTag = []string{
 	"area",
@@ -23,7 +23,7 @@ var voidTag = []string{
 }
 
 func isVoidTag(tag string) bool {
-	for _,v := range voidTag {
+	for _, v := range voidTag {
 		if v == tag {
 			return true
 		}

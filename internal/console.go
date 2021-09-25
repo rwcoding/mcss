@@ -1,4 +1,4 @@
-package console
+package internal
 
 import (
 	"os"
@@ -8,7 +8,7 @@ import (
 var consoleFlag map[string]string = map[string]string{}
 var consoleCommand map[string]bool = map[string]bool{}
 
-func init()  {
+func init() {
 	InitConsole(os.Args)
 }
 

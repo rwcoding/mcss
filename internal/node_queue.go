@@ -1,4 +1,4 @@
-package hds
+package internal
 
 type queue struct {
 	data []*Node
@@ -14,12 +14,12 @@ func (q *queue) add(node *Node) {
 
 func (q *queue) trace(tag string) {
 	length := len(q.data)
-	for i := length-1; i >= 0; i-- {
+	for i := length - 1; i >= 0; i-- {
 		if q.data[i].Tag == tag {
-			if i >= length - 1 {
+			if i >= length-1 {
 				break
 			}
-			for _,v := range q.data[i+1:] {
+			for _, v := range q.data[i+1:] {
 				q.data[i].Add(v)
 			}
 			q.data = q.data[:i+1]

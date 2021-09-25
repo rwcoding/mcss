@@ -1,4 +1,4 @@
-package hds
+package internal
 
 import (
 	"fmt"
@@ -15,10 +15,10 @@ func TestParse(t *testing.T) {
 
 	fmt.Println("length: ", len(nodes))
 
-	for _,node := range nodes {
+	for _, node := range nodes {
 		fmt.Println("type ---", node.Type, " --- tag --", node.Tag, "---con---", node.Content)
 	}
 
-	fmt.Println(ToString(nodes))
+	fmt.Println(nodesToString(nodes, ""))
 
 }
