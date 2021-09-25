@@ -19,6 +19,7 @@ var Options struct {
 	View      string                 `yaml:"view"`
 	Component []string               `yaml:"component"`
 	Mcss      map[string]interface{} `yaml:"mcss"`
+	VoidTag   []string               `yaml:"void_tag"`
 	Root      string
 }
 

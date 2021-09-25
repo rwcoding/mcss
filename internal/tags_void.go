@@ -22,6 +22,12 @@ var voidTag = []string{
 	"wbr",
 }
 
+func init() {
+	for _, v := range Options.VoidTag {
+		voidTag = append(voidTag, v)
+	}
+}
+
 func isVoidTag(tag string) bool {
 	for _, v := range voidTag {
 		if v == tag {

@@ -3,5 +3,7 @@ addr: ":8080"
 view: examples
 component:
   - examples
+void_tag:
+  - go-button
 mcss:
   app: mcss application
