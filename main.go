@@ -21,6 +21,10 @@ func main() {
 			path += "index.html"
 		}
 		if !strings.Contains(path, ".html") {
+			if strings.Contains(path, ".") {
+				internal.StaticHandler(context)
+				return
+			}
 			path += ".html"
 		}
 		file := internal.Options.View + path

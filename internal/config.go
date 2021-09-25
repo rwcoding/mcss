@@ -40,10 +40,11 @@ func parse() {
 		dir, _ = filepath.Abs(filepath.Dir(configFile))
 	} else {
 		if dir, err = filepath.Abs(filepath.Dir(os.Args[0])); err == nil {
-			f, err = os.Open(dir + string(os.PathSeparator) + "mcss.yaml")
-			if err != nil {
+			if f, err = os.Open(dir + string(os.PathSeparator) + "mcss.yaml"); err != nil {
 				if dir, err = os.Getwd(); err == nil {
-					f, err = os.Open(dir + string(os.PathSeparator) + "mcss.yaml")
+					if f, err = os.Open(dir + string(os.PathSeparator) + "mcss.local.yaml"); err != nil {
+						f, err = os.Open(dir + string(os.PathSeparator) + "mcss.yaml")
+					}
 				}
 			}
 		}

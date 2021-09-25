@@ -54,10 +54,3 @@ func FindComponent(name string, fromFile string) (string, error) {
 	}
 	return "", errors.New("can not find component " + name)
 }
-
-func FileExists(file string) bool {
-	if _, err := os.Stat(file); err != nil {
-		return false
-	}
-	return true
-}
