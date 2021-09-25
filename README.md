@@ -8,7 +8,9 @@
 
 ## 测试
 ```shell
-# html 文档请参阅 examples 目录
+# html 测试请参阅 examples 目录
+# 自定义配置可修改 mcss.yaml 测试
 # http://127.0.0.1:8080
+
 go run main.go
 ```
