@@ -1,0 +1,7 @@
+debug: true
+addr: ":8080"
+view: examples
+component:
+  - examples
+mcss:
+  app: mcss application

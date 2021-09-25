@@ -1,0 +1,24 @@
+<style>
+    li {
+        text-align: left;
+    }
+</style>
+
+<go-header title="Go-Header - {{ mcss.app }}"></go-header>
+
+<ul>
+    <li>{{obj.a}}</li>
+    <li>{{obj.b}}</li>
+
+    {% for v in arr%}
+    <li>{{ v }}</li>
+    {% endfor %}
+</ul>
+<hr>
+<div>
+    <go-button color="red" title="红色"></go-button>
+    <go-button color="green" title="绿色"></go-button>
+    <go-button color="black" title="黑色"></go-button>
+</div>
+
+<go-footer></go-footer>
