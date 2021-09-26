@@ -15,8 +15,10 @@ func TestParseIset(t *testing.T) {
 
 	var head []string
 	var tail []string
+	var innerHead []string
+	var innerTail []string
 
-	ParseIset(name, text, &attr, &head, &tail)
+	ParseIset(name, text, &attr, &head, &tail, &innerHead, &innerTail)
 
 	ReverseStringSlice(head)
 

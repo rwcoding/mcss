@@ -4,6 +4,7 @@
 + 组件命名请使用 **x-y** 的模式，如 **go-form**，文件命名：**go-form.html**，保持工程唯一
 + 支持组件嵌套
 + 支持组件变量传递、自定义全局变量（mcss）
++ 强大的、可定义的指令集
 + 自定义配置，参阅 **internal/config_sample.go**
 
 # 它能做什么
@@ -36,6 +37,31 @@
 <bs-form-item id="age" title="Your Age">
 <bs-form-item id="email" title="Your email" placeholder="name@example.com">
 <bs-form-item type="textarea" id="taid" title="Example textarea">
+```
+
+# 指令集
+#### 指令
++ ap 设置属性
++ dp 设置data属性
++ tp js模板自定义
++ ht 元素外部内容
++ in 元素内部内容
+#### 配置文件中定义一些指令
+```yaml
+iset
+  acl: tp|{{ if verify(@v) }}|{{ endif }}
+  ext: ht|🤣🤣🤣|🌹🌹🌹 || in|💖💖💖💖💖|✨✨✨✨✨
+  cds: ap|class || dp|name:xyz_@v
+```
+#### 有一个元素
+```html 
+<h1 @ext @cds="user" @acl="title">Hello World</h1>
+```
+#### 结果
+```html
+{{ if  verify("title") }}
+🤣🤣🤣<h1 class="user" data-name="xyz_user">💖💖💖💖💖Hello World✨✨✨✨✨</h1>🌹🌹🌹
+{{ endif }}
 ```
 
 ## 测试

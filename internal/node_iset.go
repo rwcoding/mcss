@@ -41,6 +41,11 @@ func ParseIset(name, text string, attr *map[string]string, head, tail, innerHead
 			if cmd == "dp" {
 				p1 = "data-" + p1
 			}
+			if cmd == "ap" && p1 == "class" {
+				if tmp, ok := (*attr)["class"]; ok {
+					p2 = tmp + " " + p2
+				}
+			}
 			if p2 == "" {
 				(*attr)[p1] = value
 			} else {
