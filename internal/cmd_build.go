@@ -12,7 +12,8 @@ import (
 
 func CmdBuild() error {
 	data := map[string]string{}
-	_ = filepath.WalkDir(Options.View, func(path string, d fs.DirEntry, err error) error {
+	viewPath := GetViewPath()
+	_ = filepath.WalkDir(viewPath, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			log.Println("warning:", err)
 			return err
@@ -22,7 +23,7 @@ func CmdBuild() error {
 			if err != nil {
 				log.Println("warning:", err)
 			}
-			k := path[len(Options.View):]
+			k := path[len(viewPath):]
 			k = strings.ReplaceAll(k, ".html", "")
 			k = strings.ReplaceAll(k, string(os.PathSeparator), "")
 			data[k] = string(r)
@@ -34,6 +35,6 @@ func CmdBuild() error {
 		return err
 	}
 
-	file := Options.Root + string(os.PathSeparator) + Options.TmpPath + string(os.PathSeparator) + "mcss.html.json"
+	file := GetTmpPath() + string(os.PathSeparator) + "mcss.html.json"
 	return ioutil.WriteFile(file, s, 0777)
 }

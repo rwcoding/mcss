@@ -15,6 +15,7 @@ var contentType map[string]string = map[string]string{
 	"png":   "image/png",
 	"jpg":   "image/jpg",
 	"gif":   "image/gif",
+	"ico":   "image/x-icon",
 	"webp":  "image/webp",
 	"jpeg":  "image/jpeg",
 	"eot":   "application/octet-stream",
@@ -25,16 +26,19 @@ var contentType map[string]string = map[string]string{
 
 func StaticHandler(context *gin.Context) {
 	path := context.Request.URL.Path
-	file := Options.Root + string(os.PathSeparator) + path
-	b, err := ioutil.ReadFile(file)
-	if err != nil {
-		context.Data(http.StatusOK, "text/html; charset=utf-8", []byte{})
-		return
-	}
+
 	ext := path[strings.LastIndex(path, ".")+1:]
 	ct, ok := contentType[ext]
 	if !ok {
 		ct = "text/html; charset=utf-8"
 	}
+
+	file := Options.Root + string(os.PathSeparator) + path
+	b, err := ioutil.ReadFile(file)
+	if err != nil {
+		context.Data(http.StatusOK, ct, []byte{})
+		return
+	}
+
 	context.Data(http.StatusOK, ct, b)
 }

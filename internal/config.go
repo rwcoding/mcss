@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 func init() {
@@ -71,16 +70,23 @@ func parse() {
 	}
 
 	Options.Root = dir
-	Options.View = strings.ReplaceAll(dir+"/"+Options.View, "/", string(os.PathSeparator))
-	if Options.TmpPath == "" {
-		Options.TmpPath = "tmp"
-	}
 
 	if s, ok := Options.Template["if_start"]; ok && s != "" {
 		templateIfStart = s.(string)
 	}
-
 	if s, ok := Options.Template["if_end"]; ok && s != "" {
 		templateIfEnd = s.(string)
+	}
+}
+
+func GetViewPath() string {
+	return FormatPath(Options.Root + "/" + Options.View)
+}
+
+func GetTmpPath() string {
+	if Options.TmpPath == "" {
+		return FormatPath(Options.Root + "/tmp")
+	} else {
+		return FormatPath(Options.Root + "/" + Options.TmpPath)
 	}
 }

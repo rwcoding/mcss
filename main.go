@@ -30,7 +30,7 @@ func main() {
 			}
 			path += ".html"
 		}
-		file := internal.Options.View + path
+		file := internal.GetViewPath() + path
 
 		html, err := internal.ParseFile(file, nil)
 
