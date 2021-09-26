@@ -64,6 +64,13 @@ func (n *Node) String(fromFile string) string {
 		}
 	}
 	s := strings.Builder{}
+
+	hasIf, hasIfOk := n.Attributes["@if"]
+	if hasIfOk && hasIf != "" {
+		s.WriteString(strings.ReplaceAll(templateIfStart, "--", hasIf))
+		delete(n.Attributes, "@if")
+	}
+
 	s.WriteString("<")
 	s.WriteString(n.Tag)
 	for k, v := range n.Attributes {
@@ -86,6 +93,10 @@ func (n *Node) String(fromFile string) string {
 	s.WriteString("</")
 	s.WriteString(n.Tag)
 	s.WriteString(">")
+
+	if hasIfOk && hasIf != "" {
+		s.WriteString(templateIfEnd)
+	}
 	return s.String()
 }
 

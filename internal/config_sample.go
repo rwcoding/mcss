@@ -8,6 +8,16 @@ package internal
 // component 您的组件放置的目录，系统查找时会 逐一扫描
 // void_tag 您的自定义的组件，如果不需要闭合，可以在这里配置
 // mcss 系统全局变量，任何页面和组件都可以使用，如 {{ mcss.app }}
+// template js模板引擎配置
+//   if_start if 开始语法，如 {{ if -- }} `--` 为替换符号
+//   if_end   if 结束语法，如 {{ endif }}
+//   From:
+//       <a @if="verify('user')" href="/user">用户</a>
+//   To:
+//       {{ if verify('user') }}
+//       <a @if="verify('user')" href="/user">用户</a>
+//       {{ endif }}
+//
 // script 运行外部命令，如 scss watch
 //   _boot 随系统启动的外部命令
 
@@ -22,8 +32,10 @@ void_tag:
   - go-button
 mcss:
   app: mcss application
+template:
+  if_start: 
+  if_end: 
 script:
   watch: npm start 
   _boot: watch
-
 `
