@@ -10,23 +10,23 @@ package internal
 // mcss 系统全局变量，任何页面和组件都可以使用，如 {{ mcss.app }}
 // iset 指令集，可多个，用 || 分隔，其中  @v 会分别替换为 值， 所有键名必须以 @ 符号开头
 //   语法：指令|参数 || 指令|参数
-//    - ap: 设置元素属性，参数形如：参数名:值， 如： class:@v， 默认可以省略 :@v
-//    - dp: 设置元素 data 属性
-//    - tp: 声明JS模板块, 参数形如：模板开始块|结束块
-//    - ht: 元素外部首尾声明语句，参数形如：开始内容|结束内容，其中内容可以只设置一个
+//    - as: 设置元素属性，参数形如：参数名:值， 如： class:@v， 默认可以省略 :@v
+//    - ds: 设置元素 data 属性
+//    - ts: 声明JS模板块, 参数形如：模板开始块|结束块
+//    - ot: 元素外部首尾声明语句，参数形如：开始内容|结束内容，其中内容可以只设置一个
 //    - in: 元素内部首尾声明语句，和 ht 对应，参数形如：开始内容|结束内容，其中内容可以只设置一个
 //   例：
-//    - 配置：@eg: ap|class || ap|name:@v || dp|name || dp|title:hello
+//    - 配置：@eg: as|class || as|name:@v || ds|name || ds|title:hello
 //    - From: <div class="c1" @eg="c2"></div>
 //    - To:   <div class="c1 c2" name="c2" data-name="c2" data-title="hello"></div>
 //
 //   例：
-//    - 配置：@eg: tp|{{ if @v }}|{{ endif }}
+//    - 配置：@eg: ts|{{ if @v }}|{{ endif }}
 //    - From: <div @eg="user"></div>
 //    - To:   {{ if user }} <div></div> {{ endif }}
 //
 //   例：
-//    - 配置：@eg: ht|<label id="@v">|</label>
+//    - 配置：@eg: ot|<label id="@v">|</label>
 //    - From: <input @eg="doc">
 //    - To:   <label id="doc"><input></label>
 //
