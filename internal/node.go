@@ -42,7 +42,23 @@ func (n *Node) String(fromFile string) string {
 	if n.Type == TextType || n.Type == DocType || n.Type == NullType {
 		return n.Content
 	}
-	if strings.Contains(n.Tag, "-") {
+
+	var head []string
+	var tail []string
+	var innerHead []string
+	var innerTail []string
+
+	for k, _ := range n.Attributes {
+		if k[:1] == "@" {
+			if text, ok := Options.Iset[k[1:]]; ok && text != "" {
+				ParseIset(k, text.(string), &n.Attributes, &head, &tail, &innerHead, &innerTail)
+			}
+		}
+	}
+	ReverseStringSlice(head)
+	ReverseStringSlice(innerHead)
+
+	if IsComponent(n.Tag) {
 
 		if len(n.Children) > 0 {
 			n.Attributes["content"] = string(nodesToString(n.Children, fromFile))
@@ -59,44 +75,44 @@ func (n *Node) String(fromFile string) string {
 					delete(n.Attributes, "content")
 				}
 			} else {
-				return string(b)
+				return strings.Join(head, "") + string(b) + strings.Join(tail, "")
 			}
 		}
 	}
 	s := strings.Builder{}
 
-	hasIf, hasIfOk := n.Attributes["@if"]
-	if hasIfOk && hasIf != "" {
-		s.WriteString(strings.ReplaceAll(templateIfStart, "--", hasIf))
-		delete(n.Attributes, "@if")
-	}
+	s.WriteString(strings.Join(head, ""))
 
 	s.WriteString("<")
 	s.WriteString(n.Tag)
 	for k, v := range n.Attributes {
 		s.WriteString(" ")
 		s.WriteString(k)
-		s.WriteString("=")
-		s.WriteString("\"")
+		s.WriteString("=\"")
 		s.WriteString(v)
 		s.WriteString("\"")
 	}
 	s.WriteString(">")
+	s.WriteString(strings.Join(innerHead, ""))
 	if !n.NeedClose {
+		s.WriteString(strings.Join(innerTail, ""))
+		s.WriteString(strings.Join(tail, ""))
 		return s.String()
 	}
+
 	if len(n.Children) > 0 {
 		for _, v := range n.Children {
 			s.WriteString(v.String(fromFile))
 		}
 	}
+
+	s.WriteString(strings.Join(innerTail, ""))
 	s.WriteString("</")
 	s.WriteString(n.Tag)
 	s.WriteString(">")
 
-	if hasIfOk && hasIf != "" {
-		s.WriteString(templateIfEnd)
-	}
+	s.WriteString(strings.Join(tail, ""))
+
 	return s.String()
 }
 

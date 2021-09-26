@@ -8,15 +8,27 @@ package internal
 // component 您的组件放置的目录，系统查找时会 逐一扫描
 // void_tag 您的自定义的组件，如果不需要闭合，可以在这里配置
 // mcss 系统全局变量，任何页面和组件都可以使用，如 {{ mcss.app }}
-// template js模板引擎配置
-//   if_start if 开始语法，如 {{ if -- }} `--` 为替换符号
-//   if_end   if 结束语法，如 {{ endif }}
-//   From:
-//       <a @if="verify('user')" href="/user">用户</a>
-//   To:
-//       {{ if verify('user') }}
-//       <a @if="verify('user')" href="/user">用户</a>
-//       {{ endif }}
+// iset 指令集，可多个，用 || 分隔，其中  @v 会分别替换为 值， 所有键名必须以 @ 符号开头
+//   语法：指令|参数 || 指令|参数
+//    - ap: 设置元素属性，参数形如：参数名:值， 如： class:@v， 默认可以省略 :@v
+//    - dp: 设置元素 data 属性
+//    - tp: 声明JS模板块, 参数形如：模板开始块|结束块
+//    - ht: 元素外部首尾声明语句，参数形如：开始内容|结束内容，其中内容可以只设置一个
+//    - in: 元素内部首尾声明语句，和 ht 对应，参数形如：开始内容|结束内容，其中内容可以只设置一个
+//   例：
+//    - 配置：@eg: ap|class || ap|name:@v || dp|name || dp|title:hello
+//    - From: <div class="c1" @eg="c2"></div>
+//    - To:   <div class="c1 c2" name="c2" data-name="c2" data-title="hello"></div>
+//
+//   例：
+//    - 配置：@eg: tp|{{ if @v }}|{{ endif }}
+//    - From: <div @eg="user"></div>
+//    - To:   {{ if user }} <div></div> {{ endif }}
+//
+//   例：
+//    - 配置：@eg: ht|<label id="@v">|</label>
+//    - From: <input @eg="doc">
+//    - To:   <label id="doc"><input></label>
 //
 // script 运行外部命令，如 scss watch
 //   _boot 随系统启动的外部命令
@@ -32,9 +44,8 @@ void_tag:
   - go-button
 mcss:
   app: mcss application
-template:
-  if_start: 
-  if_end: 
+iset:
+  _: 
 script:
   watch: npm start 
   _boot: watch

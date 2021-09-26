@@ -6,5 +6,9 @@ component:
   - examples
 void_tag:
   - go-button
+iset:
+  acl: tp|{{ if verify(@v) }}|{{ endif }}
+  ext: ht|🤣🤣🤣|🌹🌹🌹 || in|💖💖💖💖💖|✨✨✨✨✨
+  pop: ap|onclick:alert('@v')
 mcss:
   app: mcss application

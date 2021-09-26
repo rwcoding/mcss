@@ -21,7 +21,7 @@ var Options struct {
 	Component []string               `yaml:"component"`
 	Mcss      map[string]interface{} `yaml:"mcss"`
 	Script    map[string]interface{} `yaml:"script"`
-	Template  map[string]interface{} `yaml:"template"`
+	Iset      map[string]interface{} `yaml:"iset"`
 	VoidTag   []string               `yaml:"void_tag"`
 	Root      string
 	TmpPath   string `yaml:"tmp_path"`
@@ -70,13 +70,6 @@ func parse() {
 	}
 
 	Options.Root = dir
-
-	if s, ok := Options.Template["if_start"]; ok && s != "" {
-		templateIfStart = s.(string)
-	}
-	if s, ok := Options.Template["if_end"]; ok && s != "" {
-		templateIfEnd = s.(string)
-	}
 }
 
 func GetViewPath() string {

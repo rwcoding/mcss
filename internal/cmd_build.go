@@ -18,7 +18,7 @@ func CmdBuild() error {
 			log.Println("warning:", err)
 			return err
 		}
-		if !d.IsDir() && strings.HasSuffix(d.Name(), ".html") && !strings.Contains(d.Name(), "-") {
+		if !d.IsDir() && strings.HasSuffix(d.Name(), ".html") && !IsComponent(d.Name()) {
 			r, err := ParseFile(path, nil)
 			if err != nil {
 				log.Println("warning:", err)
