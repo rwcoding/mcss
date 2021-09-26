@@ -49,7 +49,7 @@
 #### 配置文件中定义一些指令
 ```yaml
 iset
-  acl: tp|{{ if verify(@v) }}|{{ endif }}
+  acl: tp|{{ if verify("@v") }}|{{ endif }}
   ext: ht|🤣🤣🤣|🌹🌹🌹 || in|💖💖💖💖💖|✨✨✨✨✨
   cds: ap|class || dp|name:xyz_@v
 ```
