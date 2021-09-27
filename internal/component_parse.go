@@ -14,6 +14,14 @@ func ParseFile(file string, data map[string]string) ([]byte, error) {
 	params := pongo2.Context{
 		"mcss": Options.Mcss,
 	}
+
+	for np, nd := range ParseIsetCom(&data) {
+		if np == "" {
+			continue
+		}
+		params[np] = nd
+	}
+
 	for k, v := range data {
 		if v[:1] == "[" {
 			r := []string{}

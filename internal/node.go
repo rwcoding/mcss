@@ -32,6 +32,7 @@ type Node struct {
 	Content    string
 	Attributes map[string]string
 	Children   []*Node
+	IsClose    bool
 }
 
 func (n *Node) Add(node *Node) {

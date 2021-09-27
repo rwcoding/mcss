@@ -15,7 +15,8 @@ func (q *queue) add(node *Node) {
 func (q *queue) trace(tag string) {
 	length := len(q.data)
 	for i := length - 1; i >= 0; i-- {
-		if q.data[i].Tag == tag {
+		if !q.data[i].IsClose && q.data[i].Tag == tag && q.data[i].Type == TagType {
+			q.data[i].IsClose = true
 			if i >= length-1 {
 				break
 			}
