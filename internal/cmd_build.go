@@ -25,7 +25,7 @@ func CmdBuild() error {
 			}
 			k := path[len(viewPath):]
 			k = strings.ReplaceAll(k, ".html", "")
-			k = strings.ReplaceAll(k, string(os.PathSeparator), "")
+			k = strings.ReplaceAll(k, string(os.PathSeparator), "/")
 			data[k] = string(r)
 		}
 		return err
