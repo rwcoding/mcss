@@ -1,10 +1,14 @@
 package internal
 
 import (
+	"bytes"
 	"github.com/gin-gonic/gin"
+	"io/fs"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -35,12 +39,53 @@ func StaticHandler(context *gin.Context) {
 		ct = "text/html; charset=utf-8"
 	}
 
+	excluded := strings.Split(context.Query("excluded"), ",")
+	for _, t := range []string{"css", "js", "less"} {
+		if strings.Contains(path, "*."+t) {
+			dir := Options.Root + string(os.PathSeparator) + strings.ReplaceAll(path, "*."+t, "")
+			context.Data(http.StatusOK, ct, scan(dir, t, excluded))
+			return
+		}
+	}
+
 	file := Options.Root + string(os.PathSeparator) + path
 	b, err := ioutil.ReadFile(file)
 	if err != nil {
-		context.Data(http.StatusOK, ct, []byte{})
+		context.Data(http.StatusNotFound, ct, []byte{})
 		return
 	}
 
 	context.Data(http.StatusOK, ct, b)
+}
+
+func scan(dir, fileType string, excluded []string) []byte {
+	var content bytes.Buffer
+	_ = filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			log.Println("warning:", err)
+			return err
+		}
+		if !d.IsDir() {
+			name := d.Name()
+			if name[len(name)-len(fileType):] != fileType {
+				return err
+			}
+			for _, v := range excluded {
+				if v == name {
+					return err
+				}
+			}
+			c, err := ioutil.ReadFile(path)
+			if err != nil {
+				log.Println("warning:", err)
+				return err
+			}
+			if fileType == "js" {
+				content.WriteString("\n; // " + path + " \n")
+			}
+			content.Write(c)
+		}
+		return err
+	})
+	return content.Bytes()
 }

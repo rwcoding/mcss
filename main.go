@@ -23,6 +23,7 @@ func main() {
 		if path[len(path)-1:] == "/" {
 			path += "index.html"
 		}
+
 		if !strings.Contains(path, ".html") {
 			if strings.Contains(path, ".") {
 				internal.StaticHandler(context)
