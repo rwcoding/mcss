@@ -31,9 +31,22 @@ func main() {
 			}
 			path += ".html"
 		}
-		file := internal.GetViewPath() + path
 
-		html, err := internal.ParseFile(file, nil)
+		var html []byte
+		var err error
+		for _, v := range internal.GetViewPath() {
+			file := v + path
+			if v[:1] == "@" {
+				file = v[1:] + path
+			}
+			html, err = internal.ParseFile(file, nil)
+			if html != nil {
+				break
+			}
+		}
+
+		//file := internal.GetViewPath() + path
+		//html, err := internal.ParseFile(file, nil)
 
 		if err != nil {
 			log.Println(err)

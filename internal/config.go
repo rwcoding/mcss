@@ -17,7 +17,7 @@ func init() {
 var Options struct {
 	Debug     bool                   `yaml:"debug"`
 	Addr      string                 `yaml:"addr"`
-	View      string                 `yaml:"view"`
+	View      []string               `yaml:"view"`
 	Component []string               `yaml:"component"`
 	Mcss      map[string]interface{} `yaml:"mcss"`
 	Script    map[string]interface{} `yaml:"script"`
@@ -72,8 +72,16 @@ func parse() {
 	Options.Root = dir
 }
 
-func GetViewPath() string {
-	return FormatPath(Options.Root + "/" + Options.View)
+func GetViewPath() []string {
+	ret := []string{}
+	for _, v := range Options.View {
+		if v[:1] == "@" {
+			ret = append(ret, "@"+FormatPath(Options.Root+"/"+v[1:]))
+		} else {
+			ret = append(ret, FormatPath(Options.Root+"/"+v))
+		}
+	}
+	return ret
 }
 
 func GetTmpPath() string {

@@ -1,6 +1,7 @@
 debug: true
 addr: ":8080"
-view: examples
+view:
+  - examples
 tmp_path: tmp
 component:
   - examples

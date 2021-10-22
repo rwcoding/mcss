@@ -2,6 +2,7 @@ package internal
 
 import (
 	"encoding/json"
+	"errors"
 	"io/fs"
 	"io/ioutil"
 	"log"
@@ -12,24 +13,34 @@ import (
 
 func CmdBuild() error {
 	data := map[string]string{}
-	viewPath := GetViewPath()
-	_ = filepath.WalkDir(viewPath, func(path string, d fs.DirEntry, err error) error {
-		if err != nil {
-			log.Println("warning:", err)
-			return err
+	for _, viewPath := range GetViewPath() {
+		isOnlySelf := false
+		if viewPath[:1] == "@" {
+			isOnlySelf = true
+			viewPath = viewPath[1:]
 		}
-		if !d.IsDir() && strings.HasSuffix(d.Name(), ".html") && !IsComponent(d.Name()) {
-			r, err := ParseFile(path, nil)
+		_ = filepath.WalkDir(viewPath, func(path string, d fs.DirEntry, err error) error {
 			if err != nil {
 				log.Println("warning:", err)
+				return err
 			}
-			k := path[len(viewPath):]
-			k = strings.ReplaceAll(k, ".html", "")
-			k = strings.ReplaceAll(k, string(os.PathSeparator), "/")
-			data[k] = string(r)
-		}
-		return err
-	})
+			if isOnlySelf && d.IsDir() {
+				return errors.New("only file in " + d.Name())
+			}
+			if !d.IsDir() && strings.HasSuffix(d.Name(), ".html") && !IsComponent(d.Name()) {
+				r, err := ParseFile(path, nil)
+				if err != nil {
+					log.Println("warning:", err)
+				}
+				k := path[len(viewPath):]
+				k = strings.ReplaceAll(k, ".html", "")
+				k = strings.ReplaceAll(k, string(os.PathSeparator), "/")
+				data[k] = string(r)
+			}
+			return err
+		})
+	}
+
 	s, err := json.Marshal(data)
 	if err != nil {
 		return err

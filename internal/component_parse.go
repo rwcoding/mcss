@@ -23,15 +23,16 @@ func ParseFile(file string, data map[string]string) ([]byte, error) {
 	}
 
 	for k, v := range data {
-		if v[:1] == "[" {
+		fv := strings.TrimSpace(v)
+		if fv != "" && fv[:1] == "[" {
 			r := []string{}
-			for _, vv := range strings.Split(v[1:len(v)-1], ",") {
+			for _, vv := range strings.Split(fv[1:len(fv)-1], ",") {
 				r = append(r, strings.TrimSpace(vv))
 			}
 			params[k] = r
-		} else if v[:1] == "{" {
+		} else if fv != "" && fv[:1] == "{" {
 			r := map[string]string{}
-			for _, vv := range strings.Split(v[1:len(v)-1], ",") {
+			for _, vv := range strings.Split(fv[1:len(fv)-1], ",") {
 				or := strings.Split(strings.TrimSpace(vv), ":")
 				if len(or) == 2 {
 					r[strings.TrimSpace(or[0])] = strings.TrimSpace(or[1])
@@ -39,7 +40,7 @@ func ParseFile(file string, data map[string]string) ([]byte, error) {
 			}
 			params[k] = r
 		} else {
-			params[k] = v
+			params[k] = fv
 		}
 	}
 
