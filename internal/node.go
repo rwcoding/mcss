@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+var posString = "<->"
+
 type NodeType uint32
 
 const (
@@ -31,6 +33,7 @@ type Node struct {
 	NeedClose  bool
 	Content    string
 	Attributes map[string]string
+	AttrKeys   []string
 	Children   []*Node
 	IsClose    bool
 }
@@ -49,10 +52,19 @@ func (n *Node) String(fromFile string) string {
 	var innerHead []string
 	var innerTail []string
 
-	for k, _ := range n.Attributes {
+	for _, k := range n.AttrKeys {
+		if _, ok := n.Attributes[k]; !ok {
+			continue
+		}
 		if k[:1] == "@" {
-			if text, ok := Options.Iset[k[1:]]; ok && text != "" {
-				ParseIset(k, text.(string), &n.Attributes, &head, &tail, &innerHead, &innerTail)
+			if rule, ok := Options.Iset[k[1:]]; ok && rule != nil {
+				if text, ok := rule.(string); ok {
+					ParseIsetV1(k, text, &n.Attributes, &head, &tail, &innerHead, &innerTail)
+				} else {
+					if rule, ok := rule.([]interface{}); ok && len(rule) > 0 {
+						ParseIset(k, rule, &n.Attributes, &head, &tail, &innerHead, &innerTail)
+					}
+				}
 			}
 		}
 	}
@@ -86,12 +98,18 @@ func (n *Node) String(fromFile string) string {
 
 	s.WriteString("<")
 	s.WriteString(n.Tag)
-	for k, v := range n.Attributes {
+	for _, k := range n.AttrKeys {
+		v, ok := n.Attributes[k]
+		if !ok {
+			continue
+		}
 		s.WriteString(" ")
 		s.WriteString(k)
-		s.WriteString("=\"")
-		s.WriteString(v)
-		s.WriteString("\"")
+		if v != posString {
+			s.WriteString("=\"")
+			s.WriteString(v)
+			s.WriteString("\"")
+		}
 	}
 	s.WriteString(">")
 	s.WriteString(strings.Join(innerHead, ""))

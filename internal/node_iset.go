@@ -13,7 +13,75 @@ const (
 	ISET_IN        = "in"
 )
 
-func ParseIset(name, text string, attr *map[string]string, head, tail, innerHead, innerTail *[]string) {
+func ParseIset(name string, rules []interface{}, attr *map[string]string, head, tail, innerHead, innerTail *[]string) {
+	value := (*attr)[name]
+
+	if _, ok := rules[0].(string); ok {
+		rules = append([]interface{}{}, rules)
+	}
+
+	for _, v := range rules {
+		desc := v.([]interface{})
+		if _, ok := desc[0].(string); !ok {
+			continue
+		}
+		if len(desc) < 2 {
+			continue
+		}
+		cmd := strings.TrimSpace(desc[0].(string))
+
+		for kk, vv := range desc {
+			if kk == 0 {
+				continue
+			}
+			if cmd == ISET_ATTR || cmd == ISET_ATTR_DATA {
+				if item, ok := vv.(map[string]string); ok {
+					for _k, _v := range item {
+						if cmd == ISET_ATTR_DATA {
+							_k = "data-" + _k
+						}
+						if cmd == ISET_ATTR && _k == "class" {
+							if tmp, ok := (*attr)["class"]; ok {
+								_v = tmp + " " + _v
+							}
+						}
+						(*attr)[_k] = strings.ReplaceAll(_v, "@v", value)
+					}
+				}
+			}
+
+			if cmd == ISET_OUT || cmd == ISET_TEMPLATE {
+				item, ok := vv.(string)
+				if !ok {
+					continue
+				}
+				if kk == 1 {
+					*head = append(*head, strings.ReplaceAll(item, "@v", value))
+				}
+				if kk == 2 {
+					*tail = append(*tail, strings.ReplaceAll(item, "@v", value))
+				}
+			}
+
+			if cmd == ISET_IN {
+				item, ok := vv.(string)
+				if !ok {
+					continue
+				}
+				if kk == 1 {
+					*innerHead = append(*innerHead, strings.ReplaceAll(item, "@v", value))
+				}
+				if kk == 2 {
+					*innerTail = append(*innerTail, strings.ReplaceAll(item, "@v", value))
+				}
+			}
+		}
+
+		delete(*attr, name)
+	}
+}
+
+func ParseIsetV1(name, text string, attr *map[string]string, head, tail, innerHead, innerTail *[]string) {
 	value := (*attr)[name]
 	for _, v := range strings.Split(strings.TrimSpace(text), "||") {
 		desc := strings.Split(strings.TrimSpace(v), "|")

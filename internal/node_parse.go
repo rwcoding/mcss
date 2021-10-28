@@ -47,8 +47,14 @@ func Parse(text []byte) ([]*Node, error) {
 			continue
 		}
 
+		// 排序
+		//_ks := []string{}
+		//for _k,_ := range token.Attr {
+		//	_ks = append(_ks, _k)
+		//}
 		for _, v := range token.Attr {
 			node.Attributes[v.Key] = v.Val
+			node.AttrKeys = append(node.AttrKeys, v.Key)
 		}
 
 		if tt == html.StartTagToken || tt == html.SelfClosingTagToken {

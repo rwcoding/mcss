@@ -34,20 +34,12 @@ package internal
 //   _boot 随系统启动的外部命令
 
 var sample = `
-debug: true
-addr: ":8080"
-view: 
-  - src
-tmp_path: tmp
-component:
-  - src
-void_tag:
-  - go-button
-mcss:
-  app: mcss application
-iset:
-  _: 
-script:
-  watch: npm start 
-  _boot: watch
+debug = false
+addr = ":8080"
+view = ["src"]
+tmp_path = ["tmp"]
+component = ["src"]
+void_tag = ["go-button"]
+[mcss]
+app = "mcss application"
 `

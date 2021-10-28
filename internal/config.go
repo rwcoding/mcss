@@ -1,7 +1,7 @@
 package internal
 
 import (
-	"gopkg.in/yaml.v3"
+	"github.com/BurntSushi/toml"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -15,14 +15,14 @@ func init() {
 }
 
 var Options struct {
-	Debug     bool                   `yaml:"debug"`
-	Addr      string                 `yaml:"addr"`
-	View      []string               `yaml:"view"`
-	Component []string               `yaml:"component"`
-	Mcss      map[string]interface{} `yaml:"mcss"`
-	Script    map[string]interface{} `yaml:"script"`
-	Iset      map[string]interface{} `yaml:"iset"`
-	VoidTag   []string               `yaml:"void_tag"`
+	Debug     bool                   `toml:"debug"`
+	Addr      string                 `toml:"addr"`
+	View      []string               `toml:"view"`
+	Component []string               `toml:"component"`
+	Mcss      map[string]interface{} `toml:"mcss"`
+	Script    map[string]interface{} `toml:"script"`
+	Iset      map[string]interface{} `toml:"iset"`
+	VoidTag   []string               `toml:"void_tag"`
 	Root      string
 	TmpPath   string `yaml:"tmp_path"`
 }
@@ -44,10 +44,10 @@ func parse() {
 		dir, _ = filepath.Abs(filepath.Dir(configFile))
 	} else {
 		if dir, err = os.Getwd(); err == nil {
-			if f, err = os.Open(dir + string(os.PathSeparator) + "mcss.local.yaml"); err != nil {
-				if f, err = os.Open(dir + string(os.PathSeparator) + "mcss.yaml"); err != nil {
+			if f, err = os.Open(dir + string(os.PathSeparator) + "mcss.local.toml"); err != nil {
+				if f, err = os.Open(dir + string(os.PathSeparator) + "mcss.toml"); err != nil {
 					if dir, err = filepath.Abs(filepath.Dir(os.Args[0])); err == nil {
-						f, err = os.Open(dir + string(os.PathSeparator) + "mcss.yaml")
+						f, err = os.Open(dir + string(os.PathSeparator) + "mcss.toml")
 					}
 				}
 			}
@@ -64,7 +64,7 @@ func parse() {
 		}
 	}
 
-	err = yaml.Unmarshal(content, &Options)
+	_, err = toml.Decode(string(content), &Options)
 	if err != nil {
 		log.Fatal("failed to parse config file, ", err.Error())
 	}

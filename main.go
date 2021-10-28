@@ -12,12 +12,13 @@ func main() {
 	internal.InitCmd()
 	internal.InitScript()
 
-	app := gin.Default()
 	if internal.Options.Debug {
 		gin.SetMode(gin.DebugMode)
 	} else {
 		gin.SetMode(gin.ReleaseMode)
 	}
+
+	app := gin.Default()
 	app.NoRoute(func(context *gin.Context) {
 		path := context.Request.URL.Path
 		if path[len(path)-1:] == "/" {
@@ -55,6 +56,8 @@ func main() {
 			context.Data(http.StatusOK, "text/html; charset=utf-8", html)
 		}
 	})
+
+	log.Println("running ······ ")
 	if err := app.Run(internal.Options.Addr); err != nil {
 		log.Fatal(err)
 	}
