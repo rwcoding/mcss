@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/rwcoding/mcss/internal"
 	"log"
@@ -57,7 +58,7 @@ func main() {
 		}
 	})
 
-	log.Println("running ······ ")
+	fmt.Println("running ······ ")
 	if err := app.Run(internal.Options.Addr); err != nil {
 		log.Fatal(err)
 	}

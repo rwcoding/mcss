@@ -13,7 +13,7 @@ const (
 	ISET_IN        = "in"
 )
 
-func ParseIset(name string, rules []interface{}, attr *map[string]string, head, tail, innerHead, innerTail *[]string) {
+func ParseIset(name string, rules []interface{}, attr *map[string]string, keys *[]string, head, tail, innerHead, innerTail *[]string) {
 	value := (*attr)[name]
 
 	if _, ok := rules[0].(string); ok {
@@ -35,8 +35,12 @@ func ParseIset(name string, rules []interface{}, attr *map[string]string, head, 
 				continue
 			}
 			if cmd == ISET_ATTR || cmd == ISET_ATTR_DATA {
-				if item, ok := vv.(map[string]string); ok {
+				if item, ok := vv.(map[string]interface{}); ok {
 					for _k, _v := range item {
+						_v, ok := _v.(string)
+						if !ok {
+							continue
+						}
 						if cmd == ISET_ATTR_DATA {
 							_k = "data-" + _k
 						}
@@ -44,6 +48,9 @@ func ParseIset(name string, rules []interface{}, attr *map[string]string, head, 
 							if tmp, ok := (*attr)["class"]; ok {
 								_v = tmp + " " + _v
 							}
+						}
+						if _, ok := (*attr)[_k]; !ok {
+							*keys = append(*keys, _k)
 						}
 						(*attr)[_k] = strings.ReplaceAll(_v, "@v", value)
 					}

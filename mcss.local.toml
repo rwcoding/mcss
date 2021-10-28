@@ -8,6 +8,7 @@ component = ["examples"]
 acl = [["ot", "{{ if verify('@v') }}", "{{ endif }}"]]
 ext = [["ot", "🤣🤣🤣", "🌹🌹🌹"], ["in", "💖💖💖💖💖", "✨✨✨✨✨"], ["as", {class = "nc"}] ]
 pop = ["as", {onclick = "alert('@v')"}]
+dis = ["as", {disabled = "<->"}]
 
 [mcss]
 app = "mcss application"

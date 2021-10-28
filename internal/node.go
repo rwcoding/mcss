@@ -62,7 +62,7 @@ func (n *Node) String(fromFile string) string {
 					ParseIsetV1(k, text, &n.Attributes, &head, &tail, &innerHead, &innerTail)
 				} else {
 					if rule, ok := rule.([]interface{}); ok && len(rule) > 0 {
-						ParseIset(k, rule, &n.Attributes, &head, &tail, &innerHead, &innerTail)
+						ParseIset(k, rule, &n.Attributes, &n.AttrKeys, &head, &tail, &innerHead, &innerTail)
 					}
 				}
 			}
