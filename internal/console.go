@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-var consoleFlag map[string]string = map[string]string{}
+var consoleFlag = map[string]string{}
 var consoleCommand []string
 
 // InitConsole 初始化控制台参数
@@ -13,6 +13,17 @@ func InitConsole(args []string) {
 	length := len(args)
 	for i := 0; i < length; i++ {
 		if jump == i {
+			continue
+		}
+		if strings.Contains(args[i], "=") {
+			arr := strings.Split(args[i], "=")
+			if strings.HasPrefix(arr[0], "--") {
+				consoleFlag[arr[0][2:]] = arr[1]
+			} else if strings.HasPrefix(arr[0], "-") {
+				consoleFlag[arr[0][1:]] = arr[1]
+			} else {
+				consoleFlag[arr[0]] = arr[1]
+			}
 			continue
 		}
 		if strings.HasPrefix(args[i], "-") {

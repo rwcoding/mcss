@@ -6,7 +6,7 @@ import (
 )
 
 func TestConsole(t *testing.T) {
-	args := []string{os.Args[0], "do", "-name", "lucy"}
+	args := []string{os.Args[0], "do", "--name=lucy"}
 	InitConsole(args)
 
 	if !HasCommand("do") {

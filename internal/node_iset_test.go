@@ -10,7 +10,7 @@ func TestParseIset(t *testing.T) {
 		"@bind": "age",
 		"id":    "ele",
 	}
-	text := "ap|class:bind || dp|bind || tp|{{ if user }}|{{ endif }} || ht|<start>|<end>"
+	//text := "ap|class:bind || dp|bind || tp|{{ if user }}|{{ endif }} || ht|<start>|<end>"
 	name := "@bind"
 
 	var head []string
@@ -18,7 +18,7 @@ func TestParseIset(t *testing.T) {
 	var innerHead []string
 	var innerTail []string
 
-	ParseIset(name, text, &attr, &head, &tail, &innerHead, &innerTail)
+	ParseIset(name, []interface{}{"ap|class:bind"}, &attr, &[]string{"@bind", "id"}, &head, &tail, &innerHead, &innerTail)
 
 	ReverseStringSlice(head)
 
